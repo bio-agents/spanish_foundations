@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>SPANISH FOUNDATIONS</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <link rel="shortcut icon" href="https://cartodb.com/assets/favicon.ico" />
+
+    <!-- leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js">
+    </script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js">
+    </script>
+
+    <!-- underscore -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.10/lodash.min.js">
+    </script>
+
+    <!-- jquery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+    </script>
+    <script src="https://unpkg.com/popper.js/dist/umd/popper.min.js">
+    </script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+    </script>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.min.js">
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css" type="text/css" />
+
+    <!-- carto.js -->
+    <script src="http://cartodb-libs.global.ssl.fastly.net/carto.js/v4.1.0/carto.min.js">
+    </script>
+
+    <!-- selec2 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js">
+    </script>
+
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js">
+    </script>
+
+    <link href="style.css" rel="stylesheet">
+    </style>
+    <!-- chartjs -->
+    <script src="http://www.chartjs.org/dist/2.7.1/Chart.bundle.js">
+    </script>
+    <script src="http://www.chartjs.org/samples/latest/utils.js">
+    </script>
+
+
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet">
+    <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js">
+    </script>
+
+
+
+</head>
+
+<body bgcolor="#E6E6FA">
+    <div id="leftSidebarClosed">
+        <button type="button" id="moreInfoButton" class="btn btn-primary ui-front" data-toggle="agenttip" data-placement="top" title="More information" style="position:fixed; bottom: 25px; right: 25px;">
+            <span class="glyphicon glyphicon-info-sign">&#x1F6C8;</span>
+        </button>
+        <button id="sidebarButtonClosed" type="button" class="btn btn-primary btn-graphics" data-toggle="agenttip" data-placement="top" title="Abrir la ventana de opciones gráficas">Gráficos</button>
+    </div>
+    <div id="leftSidebar" style="z-index: 10">
+        <button id="sidebarButtonOpen" type="button" class="btn btn-primary btn-graphics">Cerrar</button><br><br><br>
+        <center>
+            Selecciona un gráfico para mostrarlo sobre el mapa<br><br><br>
+            <button type="button" id="mostrarFundacionesPorCCAA" data-toggle="agenttip" data-placement="right" title="Mostrar el total de fundaciones por CCAA" class="btn btn-primary" style="z-index: 10; width: 100%;">Fundaciones por CCAA</button><br><br>
+            <button type="button" id="mostrarFundacionesPorAmbito" data-toggle="agenttip" data-placement="right" title="Mostrar el total de fundaciones por ámbito" class="btn btn-primary" style="z-index: 10; width: 100%;">Fundaciones por ámbito</button><br><br>
+            <button type="button" id="mostrarFundacionesPorDensidadCCAA" data-toggle="agenttip" data-placement="right" title="Mostrar el total de fundaciones por densidad de población por CCAA" class="btn btn-primary" style="z-index: 10; width: 100%;">Funda. por densidad de población</button><br><br>
+            <button type="button" id="mostrarFundacionesSegunGeneroFundadores" data-toggle="agenttip" data-placement="right" title="Mostrar el total de fundadores según tipología" class="btn btn-primary" style="z-index: 10; width: 100%;">Fundadores según tipología</button><br><br>
+            <button type="button" id="mostrarAltasBajas" data-toggle="agenttip" data-placement="right" title="Mostrar el total de altas y bajas por año" class="btn btn-primary" style="z-index: 10; width: 100%;">Altas y bajas</button><br><br>
+            <!--<button type="button" id ="mostrarFundacionesSegunFundadores" data-toggle="agenttip" data-placement="right" title="Mostrar el total de fundaciones según cantidad de fundadores" class="btn btn-primary" style="z-index: 10; width: 100%;">Funda. según cant. de fundadores</button><br><br>
+  <!--<button type="button" id ="plotArticlesPerYear" class="btn btn-primary" data-toggle="agenttip" data-placement="right" title="Show the total articles per year" style="z-index: 10">Articles per year</button><br><br>
+  <button type="button" id ="plotArticlesPerTopic" class="btn btn-primary" data-toggle="agenttip" data-placement="right" title="Show the total articles per topic" style="z-index: 10">Articles per topic</button>
+   -->
+        </center>
+    </div>
+    <!-- map div -->
+    <div id="map" class="sidebar-map"></div>
+
+
+    <!-- histogram div -->
+    <div id="histogram" style="height: 70%; cursor: move;" class="ui-front">
+        <button id="histogramClose" type="button" class="btn btn-primary btn-plot-close" data-toggle="agenttip" data-placement="top" title="Close this graphics window">X</button>
+        <h1 id="fundacionesPorCCAATitulo">
+            <center>NÚMERO DE FUNDACIONES EN COMUNIDAD AUTÓNOMA</center>
+        </h1>
+        <canvas id="perCAplot" width="100px" height="50%"></canvas>
+    </div>
+
+    <div id="histogram5" style="height: 70%; cursor: move;" class="ui-front">
+        <button id="histogramClose5" type="button" class="btn btn-primary btn-plot-close" data-toggle="agenttip" data-placement="top" title="Close this graphics window">X</button>
+        <h1 id="fundacionesPorAmbitoTitulo">
+            <center>NÚMERO DE FUNDACIONES POR ÁMBITO</center>
+        </h1>
+        <canvas id="perAmbPlot" width="100px" height="50%"></canvas>
+    </div>
+
+    <div id="histogram2" style="height: 70%; cursor: move;" class="ui-front">
+        <button id="histogramClose2" type="button" class="btn btn-primary btn-plot-close" data-toggle="agenttip" data-placement="top" title="Close this graphics window">X</button>
+        <h1 id="perDensityCAplotTitulo">
+            <center>NÚMERO DE FUNDACIONES EN COMUNIDAD AUTÓNOMA POR 10.000 HABITANTES (RATIO)</center>
+        </h1>
+        <canvas id="perDensityCAplot" width="100px" height="50%"></canvas>
+
+
+    </div>
+
+    <div id="histogram3" style="height: 70%; cursor: move;" class="ui-front">
+        <button id="histogramClose3" type="button" class="btn btn-primary btn-plot-close" data-toggle="agenttip" data-placement="top" title="Close this graphics window">X</button>
+        <h1 id="perNumberOfFoundersTitulo">
+            <center>NÚMERO DE FUNDACIONES SEGÚN<br>CANTIDAD DE FUNDADORES</center>
+        </h1>
+        <canvas id="perNumberOfFoundersPlot" width="100px" height="50%"></canvas>
+
+
+    </div>
+
+    <div id="histogram4" style="height: 70%; cursor: move;" class="ui-front">
+        <button id="histogramClose4" type="button" class="btn btn-primary btn-plot-close" data-toggle="agenttip" data-placement="top" title="Close this graphics window">X</button>
+        <h1 id="perGenderOfFoundersTitulo">
+            <center>NÚMERO DE FUNDADORES SEGÚN<br>TIPOLOGÍA</center>
+        </h1>
+        <canvas id="perGenderOfFoundersPlot" width="100px" height="50%"></canvas>
+
+
+    </div>
+
+    <div id="histogram6" style="height: 80%; width: 40%; cursor: move;" class="ui-front">
+        <button id="histogramClose6" type="button" class="btn btn-primary btn-plot-close" data-toggle="agenttip" data-placement="top" title="Close this graphics window">X</button>
+        <h1 id="altasBajasTitulo">
+            <center>ALTAS Y BAJAS DE FUNDACIONES<br>POR AÑO</center>
+        </h1>
+        <canvas id="altasBajasPlot" width="100px" height="50%"></canvas>
+        <div class="slidecontainer" style="position:absolute; bottom:10px; left: 12%; width: 80%;">
+            <center>
+
+                <button id="histogram6yearleft" type="button" class="btn btn-primary btn-sm" data-toggle="agenttip" data-placement="top" title="Close this graphics window">
+                    <</button>
+                        <span id="histogram6yeartext">2007 - 2017</span>
+                        <button id="histogram6yearright" type="button" class="btn btn-primary btn-sm" data-toggle="agenttip" data-placement="top" title="Close this graphics window">></button>
+                        <button id="histogram6activasOn" type="button" class="btn btn-primary btn-sm" data-toggle="agenttip" data-placement="top" title="Close this graphics window">Activas</button>
+                        <button id="histogram6activasOff" type="button" class="btn btn-primary btn-sm" data-toggle="agenttip" data-placement="top" title="Close this graphics window">Altas y bajas</button>
+            </center>
+        </div>
+
+    </div>
+
+    <div id="alertBox" style="height: auto; display:none;">
+        <center>Debes seleccionar una fundación para poder utilizar esta funcionalidad.</h1>
+    </div>
+
+    <div id="alertBox2" style="height: auto; display:none;">
+        <center>Lamentablemente la fundación que has buscado no aparece en nuestros registros.</h1>
+    </div>
+
+    <div id="controls">
+        <div id="content">
+        </div>
+    </div>
+
+    <!-- infowindow div -->
+    <script type="infowindow/html" id="infowindow_template">
+        <div class="cartodb-popup v2">
+            <a href="#close" class="cartodb-popup-close-button close">X</a>
+            <div class="cartodb-popup-content-wrapper">
+                <div class="cartodb-popup-content">
+                    <h3><b>NOMBRE FUNDACIÓN:</b> {{nombre}}</h3>
+
+                </div>
+                <div class="cartodb-popup-tip-container"></div>
+            </div>
+    </script>
+
+    <div id="myModalMoreInfo" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">More information about this agent</h4>
+                </div>
+                <div class="modal-body">
+                    <center><img src="images/BSC-logo.jpg" width="30%" height="30%"><br><br> This application has been developed by the Social Analytics team in the <a href="https://www.bsc.es" target="_blank">Barcelona Supercomputing Center - Centro Nacional de Supercomputación</a>.<br><br>
+                        <u><b>Development Team:</b></u><br><br> Adrián Rodríguez-Bazaga (Main Developer & Data Engineer) <a href="https://www.linkedin.com/in/adrianbazaga/" target="_blank"><img src="images/linkedin-logo.png" width="16px" height="16px"></a> <a href="mailto:adrian.bazaga@bsc.es"><img src="images/email-icon.png" width="16px" height="16px"></a><br> María José Rementeria (Team Leader) <a href="mailto:maria.rementeria@bsc.es"><img src="images/email-icon.png" width="16px" height="16px"></a></center>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="wraper-field-selector">
+        <div class="col-xs-7">
+            <div class="form-group">
+                <select id="comSelector" multiple="multiple" style="width:50px;">
+                    <option value="'Andalucía'">Andalucía</option>
+                    <option value="'Aragón'">Aragón</option>
+                    <option value="'Asturias'">Asturias</option>
+                    <option value="'Canarias'">Canarias</option>
+                    <option value="'Cantabria'">Cantabria</option>
+                    <option value="'Castilla y León'">Castilla y León</option>
+                    <option value="'Castilla-La Mancha'">Castilla-La Mancha</option>
+                    <option value="'Cataluña'">Cataluña</option>
+                    <option value="'Ceuta'">Ceuta</option>
+                    <option value="'Comunidad de Madrid'">Comunidad de Madrid</option>
+                    <option value="'Comunidad Valenciana'">Comunidad Valenciana</option>
+                    <option value="'Extremadura'">Extremadura</option>
+                    <option value="'Galicia'">Galicia</option>
+                    <option value="'Islas Baleares'">Islas Baleares</option>
+                    <option value="'La Rioja'">La Rioja</option>
+                    <option value="'Melilla'">Melilla</option>
+                    <option value="'Navarra'">Navarra</option>
+                    <option value="'País Vasco'">País Vasco</option>
+                    <option value="'Región de Murcia'">Región de Murcia</option>
+                </select>
+                <select id="catSelector" multiple="multiple" style="width:50px;">
+                    <option value="'Cultura'">Cultura</option>
+                    <option value="'Deporte'">Deporte</option>
+                    <option value="'Educacion'">Educación</option>
+                    <option value="'Investigacion'">Investigación</option>
+                    <option value="'Medio ambiente'">Medio ambiente</option>
+                    <option value="'Sanidad'">Sanidad</option>
+                    <option value="'Sociedad'">Sociedad</option>
+                    <option value="'Sin Clasificar'">Sin Clasificar</option>
+                </select>
+                <!--<select id="extinguidasSelector" size="1" style="width:50px;">
+    <option value="'Extinguidas'">Extinguidas</option>
+    <option value="'NoExtinguidas'">No extinguidas</option>
+  <option value="'Todas'">Todas</option>
+  </select>-->
+                <select id="fuenteSelector" multiple="multiple" style="width:50px;">
+                    <option value="EuskadiOpenData">EuskadiOpenData</option>
+                    <option value="RegCentral">Registro Central</option>
+                    <option value="GeneralitatCatalunya">Generalitat de Catalunya</option>
+                </select>
+                <div class="input-group ui-front">
+                    <input class="form-control" type="text" id="buscarFundacionInput" placeholder="Localizar una fundación por su nombre..." />
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary" type="button" data-toggle="agenttip" data-placement="right" title="Buscar fundación" style="z-index: 10" id="fundacionBuscarButton">Buscar</button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script type="text/cartocss" id="style">
+        #layer { marker-fill-opacity: 1; marker-line-width: 1; marker-line-color: #FFFFFF; marker-line-opacity: 1; marker-width: 7.5; marker-fill: #1a9641; marker-allow-overlap: false; [fuente = "EuskadiOpenData"] { marker-fill: #FF0000; } [fuente = "GeneralitatCatalunya"] { marker-fill: #FF8902; } }
+
+
+
+
+
+    </script>
+
+
+    <script type="text/sql" id="query">
+        SELECT DISTINCT(A.nombre),A.provincia,A.fecha_inscripcion,A.fecha_constitucion,A.domicilio,A.localidad,A.codigo_postal,A.ccaa,A.idfundacion,A.cartodb_id,A.the_geom_webmercator,A.fuente,A.provincia_nativo,A.actividad_nativo,A.actividad_principal FROM foundations_regcen_euskadi_v1 A WHERE A.ccaa IN (<%= comunidadesAutonomas %>) AND A.actividad_principal IN (<%= actividadesPrincipales %>) AND latitude IS NOT NULL AND A.fecha_extincion LIKE (<%= extincionVariable %>) AND A.fuente IN (<%= fuenteVariable %>)
+    </script>
+
+    <script type="text/sql" id="querySpain">
+        SELECT * FROM "carto-bsc".spain_canary_displaced
+    </script>
+
+    <!--spanish_foundations-->
+    <script src="foundations_v9_120918.js">
+    </script>
+
+</body>
+
+</html>
